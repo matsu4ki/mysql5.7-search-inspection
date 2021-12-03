@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  ja_db:
+    build:
+      context: .
+      dockerfile: ./docker/ja_wiki.dockerfile
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --skip-character-set-client-handshake
+    ports:
+      - 3366:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MEMSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ja_wikipedia
+  en_db:
+    build:
+      context: .
+      dockerfile: ./docker/en_wiki.dockerfile
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --skip-character-set-client-handshake
+    ports:
+      - 3367:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MEMSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: en_wikipedia
+  th_db:
+    build:
+      context: .
+      dockerfile: ./docker/th_wiki.dockerfile
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --skip-character-set-client-handshake
+    ports:
+      - 3368:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MEMSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: th_wikipedia
+  vi_db:
+    build:
+      context: .
+      dockerfile: ./docker/vi_wiki.dockerfile
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --skip-character-set-client-handshake
+    ports:
+      - 3369:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MEMSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vi_wikipedia
