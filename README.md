@@ -1,4 +1,4 @@
-# 検証
+# MySQL5.7における検索の性能検証
 
 mySQL5.7における、検索の検証を行う。
 データ容量、速度の観点から判断する。
@@ -11,15 +11,14 @@ mySQL5.7における、検索の検証を行う。
 それぞれについて、検索用のテーブルを作成し
 数回ワード検索を行い、判断する。
 
-## 実施方法
+## 注意事項
 
-`./setup.sh`を起動してデータを準備する。
-`aria2`を利用してDLしているので、`aria2`を用意すること。
+検索対象はVARCHAR型を想定していたが、wikipediaのデータはVARBINARY型だった。
+VARBINARYとVARCHARのダミーデータを用意して比較してみたところ、VARBINARYの方が速度的に少し速い以外の差が見られなかったため、
+本検証はVARBINARYのカラムで実施する。
 
-- https://qiita.com/TokyoMickey/items/cb51805a19dcee416151
-- https://aria2.github.io/
+## 計測方法
 
-mysql5.7の docker コンテナで実施する。
 「Like」「Like + Partition」「Full Text Search」実装を行い、検索した際の
 
 - 総データ容量
