@@ -1,4 +1,5 @@
 require 'open3'
+require './downloader'
 
 DEFAULT_DIR = Dir.pwd.freeze
 SQL_FILE_NAME = "create-sample.sql"
@@ -8,6 +9,8 @@ SQL_FILE_NAME = "create-sample.sql"
   p "#{lang}用データのDLする⏬"
   Dir.chdir(DEFAULT_DIR)
   Dir.chdir("./resource/#{lang}")
+
+  download_wiki_title(lang: lang)
 
   if File.file?("./#{lang}wiki-20211101-all-titles.gz")
     p "#{lang}用データは既にDLされているためスキップ⏩"

@@ -22,12 +22,7 @@ end
   Dir.chdir(DEFAULT_DIR)
   Dir.chdir("./resource/#{lang}")
 
-  if File.file?("./#{lang}wiki-20211101-all-titles.gz")
-    p "#{lang}用データは既にDLされているためスキップ⏩"
-  else
-    result, err, status = Open3.capture3("aria2c -x5 -d ./ https://dumps.wikimedia.org/#{lang}wiki/20211101/#{lang}wiki-20211101-all-titles.gz")
-    p "DL結果🗳: #{[result, err, status]}"
-  end
+  download_wiki_title(lang: lang)
 
   # ファイル生成
   if File.exist?("#{lang}wiki-20211101-all-titles.gz")
