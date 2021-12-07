@@ -60,7 +60,7 @@ end
 
       titles.each_line.with_index(1) do |line, row_number|
         break if row_number > MAX_ROW_SIZE
-        col1, col2 = titles.gets&.split&.map{|col| col.delete("'")}
+        col1, col2 = titles.gets&.split&.map{|col| col.delete("'")}&.map{|col| col.delete("\\")}
         if col1 && col2
           sql.write("INSERT INTO page(#{col1_title}, #{col2_title}) VALUES ('#{col1}', '#{col2}');\n")
         end

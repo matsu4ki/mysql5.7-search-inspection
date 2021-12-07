@@ -36,7 +36,7 @@ SQL_FILE_NAME = "create-sample.sql"
       SQL
 
       titles.each_line do |line|
-        col1, col2 = titles.gets&.split&.map{|col| col.delete("'")}
+        col1, col2 = titles.gets&.split&.map{|col| col.delete("'")}&.map{|col| col.delete("\\")}
         if col1 && col2
           sql.write("INSERT INTO page(#{col1_title}, #{col2_title}) VALUES ('#{col1}', '#{col2}');\n")
         end
