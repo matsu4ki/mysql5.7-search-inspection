@@ -9,11 +9,12 @@ class Creator
     @file_name = file_name #最初に言語を追加する必要あり
     @languages = languages
     @workspace_dir = workspace_dir
-    @mixed_file_amount = 10
+    @mixed_file_amount = 25
     @max_number_of_digits = max_number_of_digits || 10
+
   end
 
-  def construct_sql(split_span = 10_000, lang:, sql_file_name:)
+  def construct_sql(split_span = 10_000, partition_col_range = 1_000, lang:, sql_file_name:)
     Dir.chdir(@workspace_dir)
     # ダウンロードする言語のフォルダを作成する
     `mkdir -p ./resource/#{lang}`
@@ -54,7 +55,7 @@ class Creator
           split_span.times.each {
             col1, col2 = unpacked_file.gets&.split&.map{|col| col.delete("'").delete("\\")}
             if col1 && col2
-              sql.write("INSERT INTO page(#{col1_title}, #{col2_title}) VALUES ('#{col1}', '#{col2}');\n")
+              sql.write("INSERT INTO page(#{col1_title}, #{col2_title}) VALUES (#{rand(partition_col_range)}, '#{col2}');\n")
             end
           }
         end

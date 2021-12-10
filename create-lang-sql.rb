@@ -10,9 +10,9 @@ creator = Creator.new(FILE_NAME, LANGUAGES, WORKSPACE_DIR, MAX_NUMBER_OF_DIGITS)
 end
 
 # 各言語を個別で生成
-creator.construct_sql(SPLIT_SPAN, lang: :ja, sql_file_name: SQL_FILE_NAME)
-creator.construct_sql(SPLIT_SPAN, lang: :en, sql_file_name: SQL_FILE_NAME)
-creator.construct_sql(SPLIT_SPAN, lang: :vi, sql_file_name: SQL_FILE_NAME)
-creator.construct_sql(SPLIT_SPAN, lang: :th, sql_file_name: SQL_FILE_NAME)
+creator.construct_sql(SPLIT_SPAN, PARTITION_COL_RANGE, lang: :ja, sql_file_name: SQL_FILE_NAME)
+creator.construct_sql(SPLIT_SPAN, PARTITION_COL_RANGE, lang: :en, sql_file_name: SQL_FILE_NAME)
+creator.construct_sql(SPLIT_SPAN, PARTITION_COL_RANGE, lang: :vi, sql_file_name: SQL_FILE_NAME)
+creator.construct_sql(SPLIT_SPAN, PARTITION_COL_RANGE, lang: :th, sql_file_name: SQL_FILE_NAME)
 
 p "各種言語のSQLファイル生成が終わったよ👍"
