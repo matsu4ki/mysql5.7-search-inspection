@@ -46,3 +46,7 @@ https://www.mediawiki.org/wiki/Manual:Page_table/ja
 
 ライセンス等に関してはこちらを参照
 https://ja.wikipedia.org/wiki/Wikipedia:%E3%82%A6%E3%82%A3%E3%82%AD%E3%83%9A%E3%83%87%E3%82%A3%E3%82%A2%E3%82%92%E4%BA%8C%E6%AC%A1%E5%88%A9%E7%94%A8%E3%81%99%E3%82%8B
+
+## パーティションについて
+
+https://qiita.com/hit/items/3dea20c9f5872edc8909
