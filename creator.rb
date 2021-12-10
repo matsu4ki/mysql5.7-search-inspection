@@ -5,16 +5,15 @@ require 'open3'
 #   実施する場合は、生成するSQLもテンプレートとして流し込める形にする
 class Creator
 
-  def initialize(file_name, languages, workspace_dir)
+  def initialize(file_name, languages, workspace_dir, max_number_of_digits)
     @file_name = file_name #最初に言語を追加する必要あり
     @languages = languages
     @workspace_dir = workspace_dir
-    @split_span = 10_000
     @mixed_file_amount = 10
-    @max_number_of_digits = 10
+    @max_number_of_digits = max_number_of_digits || 10
   end
 
-  def construct_sql(lang:, sql_file_name:)
+  def construct_sql(split_span = 10_000, lang:, sql_file_name:)
     Dir.chdir(@workspace_dir)
     # ダウンロードする言語のフォルダを作成する
     `mkdir -p ./resource/#{lang}`
@@ -33,7 +32,7 @@ class Creator
       file_no = 0
       col1_title, col2_title = unpacked_file.gets.split
 
-      File.open("#{sprintf("%010d", file_no)}_#{sql_file_name}", mode = "w") do |sql|
+      File.open("#{sprintf("%0#{@max_number_of_digits}d", file_no)}_#{sql_file_name}", mode = "w") do |sql|
         sql.write(<<~"SQL")
         drop table if exists page;
         create table page (
@@ -47,14 +46,17 @@ class Creator
       file_no = file_no + 1
       end_of_file_number = end_of_file_number + 1
       while true
-        raise "Over File Number" if file_no.to_s.size >= @max_number_of_digits
-          File.open("#{sprintf("%0#{@max_number_of_digits}d", file_no)}_#{sql_file_name}", mode = "w") do |sql|
-            @split_span.times.each {
-              col1, col2 = unpacked_file.gets&.split&.map{|col| col.delete("'").delete("\\")}
-              if col1 && col2
-                sql.write("INSERT INTO page(#{col1_title}, #{col2_title}) VALUES ('#{col1}', '#{col2}');\n")
-              end
-            }
+        if file_no.to_s.size >= @max_number_of_digits
+          p "Over File Number"
+          break
+        end
+        File.open("#{sprintf("%0#{@max_number_of_digits}d", file_no)}_#{sql_file_name}", mode = "w") do |sql|
+          split_span.times.each {
+            col1, col2 = unpacked_file.gets&.split&.map{|col| col.delete("'").delete("\\")}
+            if col1 && col2
+              sql.write("INSERT INTO page(#{col1_title}, #{col2_title}) VALUES ('#{col1}', '#{col2}');\n")
+            end
+          }
         end
 
         if unpacked_file.eof?
@@ -68,15 +70,16 @@ class Creator
     p "#{lang}用SQLの作成完了✅"
 
     p "#{lang}用SQLのgzファイルを作成する🗜"
-    (0..end_of_file_number).each do |file_number|
-      result, err, status = Open3.capture3("gzip -9c #{sprintf("%010d", file_number)}_#{sql_file_name} > #{sprintf("%0#{@max_number_of_digits}d", file_number)}_#{sql_file_name}.gz")
+    (0...end_of_file_number).each do |file_number|
+      result, err, status = Open3.capture3("gzip -9c #{sprintf("%0#{@max_number_of_digits}d", file_number)}_#{sql_file_name} > #{sprintf("%0#{@max_number_of_digits}d", file_number)}_#{sql_file_name}.gz")
       p "ファイル作成で問題が発生しました🗜: #{[result, err, status]}" if !err&.empty?
     end
     p "#{lang}用SQLのgzファイルが作成完了✅"
+    Dir.chdir(@workspace_dir)
   end
 
   # 各言語のSQLファイルは存在している前提で実行する
-  def constract_mixed_sql(max_row_size = 250_000, sql_file_name:)
+  def constract_mixed_sql(sql_file_name:)
     Dir.chdir(@workspace_dir)
     # ダウンロードする言語のフォルダを作成する
     `mkdir -p resource/mixed`
@@ -132,12 +135,12 @@ class Creator
 
     #   end
     # end
+    # p "SQLのgzファイルを作成する🗜"
+    # result, err, status = Open3.capture3("gzip -9c #{sql_file_name} > #{sql_file_name}.gz")
+    # p "ファイル作成結果🗜: #{[result, err, status]}"
+    # p "SQLのgzファイルが作成完了✅" if !!err&.empty?
+    # Dir.chdir(@workspace_dir)
     p "mixed用SQLを作成完了✅"
-
-    p "SQLのgzファイルを作成する🗜"
-    result, err, status = Open3.capture3("gzip -9c #{sql_file_name} > #{sql_file_name}.gz")
-    p "ファイル作成結果🗜: #{[result, err, status]}"
-    p "SQLのgzファイルが作成完了✅" if !!err&.empty?
   end
 
   private

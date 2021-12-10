@@ -3,8 +3,9 @@ require './creator'
 SQL_FILE_NAME = "create-sample.sql"
 LANGUAGES = [:ja, :en, :vi, :th]
 WORKSPACE_DIR = Dir.pwd.freeze
-MAX_ROW_SIZE = 250_000
+SPLIT_SPAN = 10_000
+MAX_NUMBER_OF_DIGITS = 3
 FILE_NAME = "wiki-20211101-all-titles.gz"
 
-# load('create-lang-sql.rb')
+load('create-lang-sql.rb')
 load('create-mixed-sql.rb')
